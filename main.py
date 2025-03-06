@@ -1,13 +1,12 @@
 ''' 
-PROJECT  © 2020 Amogh Thusoo
-VERSION : 0.2
+PROJECT  © 2022 Amogh Thusoo
+VERSION : 0.3
 COMPILED THROUGH : WINDOWS 8 : ORACLE VIRTUAL BOX : LINUX OS : UBUNTU 20.04 LTS (VIRTUAL MACHINE)
 
 
 CAUTION :- IF YOU ARE USING THIS APP ON WINDOWS, MACOS OR LINUX, THEN MANUALLY SET THE 'Windows_Mode' TO 'True' FOR PRESERVING THE DIMENSIONS
 OF THE APP WINDOW 
 '''
-Windows_Mode = True
 
 # SOURCE CODE 
 
@@ -20,8 +19,16 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
 
+Windows_Mode = True
 
+# RESIZING KIVY WINDOW TO ANDROID DIMENSIONS
+
+if(Windows_Mode == True):
+    Window.size = (380, 768)
+    Window.top = 0
+    Window.left = 986
 
 # MIXING DIFFERENT COLOURS
 
@@ -46,12 +53,6 @@ yellow = [1, 1, 0, 1]
 Window.clearcolor = grey_for_window
 
 
-# RESIZING KIVY WINDOW TO ANDROID DIMENSIONS
-
-if Windows_Mode == True:
-    Window.size = (365, 650)
-
-
 # FIXING UNIFORM TEXT SIZE AND FONT STYLE
 
 text_size = '35sp'
@@ -62,8 +63,8 @@ small_output_size = '25sp'
 output_size = '45sp'
 message_size = '30sp'
 on_press_text_size = '30sp'
-font_style_gunplay = 'App_Data/Fonts/gunplay.ttf'
-font_style_fontello = 'App_Data/Fonts/fontello.ttf'
+font_style_gunplay = 'app_data/Fonts/gunplay.ttf'
+font_style_fontello = 'app_data/Fonts/fontello.ttf'
 
 
 # CREATING VARIABLES FOR STORING THE STATE OF EQUAL TO BUTTON 
@@ -81,8 +82,8 @@ class Calculator(App):
     def Info(self):
 
         self.app_name = Button(font_name = font_style_gunplay, text = 'Calculator' , background_normal = '', background_down = '', background_color = dark_purple, color = white, font_size = '30sp')
-        self.developer = Button(text = '\u00a9' + ' 2020 Amogh Thusoo', background_normal = '', background_down = '', background_color = dark_purple, color = white, font_size = '14sp')
-        self.version = Button(text = 'Version : 0.2', halign = 'left', background_normal = '', background_down = '', background_color = dark_purple, color = white, font_size = '14sp')
+        self.developer = Button(text = '\u00a9' + ' 2022 Amogh Thusoo', background_normal = '', background_down = '', background_color = dark_purple, color = white, font_size = '14sp')
+        self.version = Button(text = 'Version : 0.3', halign = 'left', background_normal = '', background_down = '', background_color = dark_purple, color = white, font_size = '14sp')
         self.false_button_1 = Button(background_normal = '', background_down = '', size_hint = (0.08,1), background_color = dark_purple)
         self.false_button_2 = Button(background_normal = '', background_down = '', size_hint = (1,0.5), background_color = dark_purple)
         self.false_button_3 = Button(background_normal = '', background_down = '', size_hint = (0.5,1), background_color = dark_purple)
@@ -587,6 +588,56 @@ class Calculator(App):
                 self.out.text = str(round(eval(self.computing_string), 13))
                 
                 
+                 
+            except:  
+                self.out.font_size = message_size
+                self.out.color = red
+                self.out.font_name = font_style_gunplay 
+                self.out.text = 'ERROR'
+                equal_memory = True
+            
+            '''
+            #Bug3
+
+            nisfn :- negative index of significant number
+            lro :- length of raw output
+            pisfn :- positive index of significant number
+            id :- index of decimal
+            rp :- rounding precision
+            '''
+            try:
+                if '.' in self.out.text and self.out.text[-1] != self.out.text[-2]:
+                    
+                    self.nisfn = -3
+                    while True:
+
+                        if self.out.text[self.nisfn] != self.out.text[-2]:
+                            break
+
+                        self.nisfn -= 1
+
+                if self.nisfn < -5:
+
+                    self.lro = len(self.out.text)
+                    self.pisfn = self.lro + self.nisfn
+                    self.id = self.out.text.index('.')
+                    self.rp = self.pisfn - self.id
+                    self.out.text = str(round(float(self.out.text), self.rp))
+            
+            except:
+                pass
+
+
+            try:
+                if self.out.text[-1] == '0' and self.out.text[-2] == '.':
+                    self.out.text = self.out.text[0: len(self.out.text) - 2]
+                if self.out.text[0] == '-' and self.out.text[1] == '0' and len(self.out.text) == 2:
+                    self.out.text = '0'
+
+            except:
+                pass
+
+            try:
                 if len(self.out.text) <= 13:
                     self.out.font_size = output_size
                     self.message_display.text = ''
@@ -596,20 +647,8 @@ class Calculator(App):
                 else:
                     self.message_display.font_size = message_size
                     self.message_display.text = 'Maximum Level Reached'
-                equal_memory = True 
-            except:  
-                self.out.font_size = message_size
-                self.out.color = red
-                self.out.font_name = font_style_gunplay 
-                self.out.text = 'ERROR'
                 equal_memory = True
-                
-            try:
-                if self.out.text[-1] == '0' and self.out.text[-2] == '.':
-                    self.out.text = self.out.text[0: len(self.out.text) - 2]
-                if self.out.text[0] == '-' and self.out.text[1] == '0' and len(self.out.text) == 2:
-                    self.out.text = '0'
-
+            
             except:
                 pass
             
